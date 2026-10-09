@@ -1,0 +1,15 @@
+# Bağımlılıklar
+node_modules/
+
+# Çalışma zamanı logları (sunucu açılınca otomatik oluşur)
+logs/
+*.log
+
+# Ortam değişkenleri
+.env
+
+# Yerel editör / Claude Code ayarları
+.claude/
+
+# macOS
+.DS_Store
