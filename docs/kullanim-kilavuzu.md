@@ -1,6 +1,6 @@
 # Kullanım Kılavuzu — TaskFlow API Entegrasyonu
 
-Bu kılavuz, TaskFlow API'sini bir istemci uygulamadan (frontend, script, başka bir servis) nasıl kullanacağınızı adım adım açıklar.
+Bu sayfa, TaskFlow API'sini bir istemciden (frontend, script veya başka bir servis) kullanmak için örnek istekleri içerir.
 
 ## 1. Sunucuyu Başlatma
 
@@ -90,4 +90,4 @@ curl "http://localhost:3000/tasks?sort=-createdAt"
 
 ## 6. Postman ile Test
 
-İstekleri Postman'de elle oluşturup sırayla çalıştırabilirsiniz (base URL: `http://localhost:3000`). Örnek test sonuçları için [homework/postman-ekran-goruntuleri/](../homework/postman-ekran-goruntuleri/) klasörüne bakın.
+Aynı istekleri Postman'de de oluşturabilirsiniz (base URL: `http://localhost:3000`). Ekran görüntüleri için [homework/postman-ekran-goruntuleri/](../homework/postman-ekran-goruntuleri/) klasörüne bakın.

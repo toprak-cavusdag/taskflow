@@ -1,6 +1,6 @@
 # TaskFlow API — Kurulum Notu
 
-Node.js / Express ile geliştirilmiş görev yönetim REST API'si. Veriler bellek içidir (veritabanı yok).
+Node.js ve Express ile yazılmış görev yönetimi REST API'si. Veriler bellekte tutulur.
 
 ## Gereksinimler
 
@@ -54,5 +54,4 @@ Ayrıntılar için: [../docs/api-documentation.md](../docs/api-documentation.md)
 ## Notlar
 
 - Sunucu yeniden başlatılınca tüm görevler silinir.
-- İstekler `logs/requests.log` dosyasına yazılır.
-- Test senaryoları: [../docs/test-documentation.md](../docs/test-documentation.md)
+- Her istek `logs/requests.log` dosyasına yazılır.

@@ -1,12 +1,10 @@
 # TaskFlow API
 
-Ekip görevlerini takip etmek için geliştirilmiş, Node.js ve Express ile yazılmış bir REST API.
-
-Görev oluşturma, listeleme, güncelleme ve silme; durum/öncelik filtreleme, anahtar kelime arama, kişi bazlı listeleme, sayfalama, sıralama ve raporlama özelliklerini içerir. Veriler bellekte tutulur, harici bir veritabanı gerektirmez.
+Görev yönetimi için Node.js ve Express ile yazılmış bir REST API. Görevleri oluşturabilir, listeleyebilir, güncelleyebilir, silebilir, filtreleyebilir ve raporlayabilirsiniz. Veriler bellekte tutulur; veritabanı gerekmez.
 
 ## Gereksinimler
 
-- Node.js 18 veya üzeri
+- Node.js 18+
 - npm
 
 ## Kurulum
@@ -20,64 +18,67 @@ npm install
 ## Çalıştırma
 
 ```bash
-npm start        # üretim modu
-npm run dev      # geliştirme modu (nodemon ile otomatik yeniden başlatma)
+npm start      # üretim modu
+npm run dev    # geliştirme modu (nodemon ile otomatik yeniden başlatma)
 ```
 
-Sunucu varsayılan olarak `http://localhost:3000` adresinde çalışır. Başka bir port için:
+Sunucu `http://localhost:3000` adresinde açılır. Port değiştirmek için:
 
 ```bash
 PORT=4000 npm start
 ```
 
-Çalışıp çalışmadığını kontrol etmek için:
+Çalıştığını doğrulamak için:
 
 ```bash
 curl http://localhost:3000/
 # {"message":"TaskFlow API calisiyor."}
 ```
 
-## Görev Modeli
+## Görev Alanları
 
 | Alan | Tip | Zorunlu | Açıklama |
 |---|---|---|---|
-| `id` | string (UUID) | — | Sunucu tarafından üretilir |
-| `title` | string | ✅ | Görev başlığı |
-| `description` | string | ✅ | Görev açıklaması |
-| `priority` | `low` \| `medium` \| `high` | ✅ | Öncelik |
-| `assignee` | string | ✅ | Atanan kişi |
-| `status` | `pending` \| `in-progress` \| `completed` | — | Varsayılan `pending` |
-| `createdAt` | ISO 8601 | — | Sunucu tarafından üretilir |
-| `updatedAt` | ISO 8601 | — | Sunucu tarafından üretilir |
+| `id` | UUID | Hayır | Sunucu üretir |
+| `title` | string | Evet | Başlık, boş olamaz |
+| `description` | string | Evet | Açıklama, boş olamaz |
+| `priority` | `low`, `medium`, `high` | Evet | Öncelik |
+| `assignee` | string | Evet | Atanan kişi, boş olamaz |
+| `status` | `pending`, `in-progress`, `completed` | Hayır | Varsayılan `pending` |
+| `createdAt`, `updatedAt` | ISO 8601 | Hayır | Sunucu üretir |
 
 ## Endpoint'ler
 
 | Metot | Yol | Açıklama |
 |---|---|---|
 | POST | `/tasks` | Görev oluşturur |
-| GET | `/tasks` | Görevleri listeler; filtre, sıralama ve sayfalama destekler |
+| GET | `/tasks` | Görevleri listeler (filtre, sıralama, sayfalama) |
 | GET | `/tasks/search?keyword=...` | Başlık ve açıklamada arama yapar |
-| GET | `/tasks/assignee/:name` | Belirli bir kişiye atanmış görevleri listeler |
-| GET | `/tasks/:id` | Tek bir görevi döndürür |
+| GET | `/tasks/assignee/:name` | Bir kişiye atanmış görevleri listeler |
+| GET | `/tasks/:id` | Tek görevi döndürür |
 | PUT | `/tasks/:id` | Görevi günceller |
 | DELETE | `/tasks/:id` | Görevi siler (`204 No Content`) |
-| GET | `/reports/completed` | Tamamlanan görevlerin sayısı ve listesi |
-| GET | `/reports/pending` | Bekleyen görevlerin sayısı ve listesi |
-| GET | `/reports/summary` | Toplam sayı, duruma ve önceliğe göre dağılım |
+| GET | `/reports/completed` | Tamamlanan görevlerin sayısını ve listesini döndürür |
+| GET | `/reports/pending` | Bekleyen görevlerin sayısını ve listesini döndürür |
+| GET | `/reports/summary` | Toplam sayı ile duruma ve önceliğe göre dağılımı döndürür |
 
-### Listeleme parametreleri (`GET /tasks`)
+### `GET /tasks` parametreleri
 
-| Parametre | Örnek | Açıklama |
-|---|---|---|
-| `status` | `?status=completed` | Duruma göre filtreler |
-| `priority` | `?priority=high` | Önceliğe göre filtreler |
-| `sort` | `?sort=createdAt`, `?sort=-createdAt` | Alana göre artan/azalan sıralar (`-` azalan) |
-| `page` | `?page=2` | Sayfa numarası (varsayılan `1`) |
-| `limit` | `?limit=5` | Sayfa başına kayıt (varsayılan `10`) |
+| Parametre | Örnek | Varsayılan | Açıklama |
+|---|---|---|---|
+| `status` | `?status=completed` | — | Duruma göre filtreler |
+| `priority` | `?priority=high` | — | Önceliğe göre filtreler |
+| `sort` | `?sort=createdAt` veya `?sort=-createdAt` | — | Artan veya azalan (`-`) sıralar |
+| `page` | `?page=2` | `1` | Sayfa numarası |
+| `limit` | `?limit=5` | `10` | Sayfa başına kayıt |
 
-Parametreler birlikte kullanılabilir: `GET /tasks?priority=high&sort=-createdAt&page=1&limit=5`
+Parametreler birlikte kullanılabilir:
 
-### Örnek istekler
+```
+GET /tasks?priority=high&sort=-createdAt&page=1&limit=5
+```
+
+### Örnekler
 
 ```bash
 # Görev oluştur
@@ -85,10 +86,10 @@ curl -X POST http://localhost:3000/tasks \
   -H "Content-Type: application/json" \
   -d '{"title":"Backend kurulumu","description":"Express projesini kur","priority":"high","assignee":"musa"}'
 
-# Tamamlanan görevleri listele
+# Tamamlanan görevler
 curl "http://localhost:3000/tasks?status=completed"
 
-# "backend" kelimesini ara
+# Anahtar kelime ara
 curl "http://localhost:3000/tasks/search?keyword=backend"
 
 # Bir kişinin görevleri
@@ -100,13 +101,13 @@ curl -X PUT http://localhost:3000/tasks/<id> \
   -d '{"title":"Backend kurulumu","description":"Express projesini kur","priority":"high","assignee":"musa","status":"completed"}'
 ```
 
-Tüm endpoint'lerin istek ve yanıt örnekleri için [docs/api-documentation.md](docs/api-documentation.md) dosyasına bakın.
+İstek ve yanıt örnekleri için [docs/api-documentation.md](docs/api-documentation.md), adım adım kullanım için [docs/kullanim-kilavuzu.md](docs/kullanim-kilavuzu.md) dosyalarına bakın.
 
 ## Hata Yanıtları
 
-| Kod | Ne zaman |
+| Kod | Durum |
 |---|---|
-| 400 | Doğrulama hatası (`{ "error": "Validation failed", "details": [...] }`) |
+| 400 | Doğrulama hatası: `{ "error": "Validation failed", "details": [...] }` |
 | 404 | Görev veya endpoint bulunamadı |
 | 500 | Beklenmeyen sunucu hatası |
 
@@ -114,21 +115,19 @@ Tüm endpoint'lerin istek ve yanıt örnekleri için [docs/api-documentation.md]
 
 ```
 taskflow/
-├── server.js                 # giriş noktası
+├── server.js                 giriş noktası
 ├── src/
-│   ├── app.js                # Express uygulaması ve middleware kaydı
-│   ├── routes/               # endpoint tanımları
-│   ├── controllers/          # istek/yanıt mantığı
-│   ├── middleware/           # logger, doğrulama, hata yakalama
-│   └── models/taskStore.js   # bellek içi veri deposu
-├── docs/
-│   ├── api-documentation.md  # API referansı
-│   └── kullanim-kilavuzu.md  # istemci tarafı kullanım kılavuzu
-└── homework/                 # proje tanıtım dokümanı ve Postman test ekran görüntüleri
+│   ├── app.js                Express uygulaması ve middleware kaydı
+│   ├── routes/               endpoint tanımları
+│   ├── controllers/          istek ve yanıt mantığı
+│   ├── middleware/           logger, doğrulama, hata yakalama
+│   └── models/taskStore.js   bellek içi veri deposu
+├── docs/                     API ve kullanım dokümanları
+└── homework/                 proje tanıtımı ve Postman ekran görüntüleri
 ```
 
 ## Notlar
 
-- Veriler bellekte tutulur. Sunucu yeniden başlatıldığında tüm görevler silinir.
-- Her istek, sunucu çalıştığı sürece `logs/requests.log` dosyasına yazılır.
-- Kimlik doğrulama yoktur. Bu bir eğitim/demo projesidir.
+- Sunucu yeniden başlatılınca tüm görevler silinir.
+- Her istek `logs/requests.log` dosyasına yazılır.
+- Kimlik doğrulama yoktur.

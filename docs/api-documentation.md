@@ -7,11 +7,11 @@ Base URL: `http://localhost:3000`
 | Alan | Tip | Zorunlu | Açıklama |
 |---|---|---|---|
 | `id` | string (UUID) | sistem tarafından üretilir | Görev kimliği |
-| `title` | string | ✅ | Görev başlığı |
-| `description` | string | ✅ | Görev açıklaması |
-| `priority` | `"low" \| "medium" \| "high"` | ✅ | Öncelik |
-| `assignee` | string | ✅ | Atanan kişi |
-| `status` | `"pending" \| "in-progress" \| "completed"` | ❌ (varsayılan `"pending"`) | Durum |
+| `title` | string | Evet | Görev başlığı |
+| `description` | string | Evet | Görev açıklaması |
+| `priority` | `"low" \| "medium" \| "high"` | Evet | Öncelik |
+| `assignee` | string | Evet | Atanan kişi |
+| `status` | `"pending" \| "in-progress" \| "completed"` | Hayır (varsayılan `"pending"`) | Durum |
 | `createdAt` | ISO 8601 string | sistem tarafından üretilir | Oluşturulma zamanı |
 | `updatedAt` | ISO 8601 string | sistem tarafından üretilir | Son güncelleme zamanı |
 
